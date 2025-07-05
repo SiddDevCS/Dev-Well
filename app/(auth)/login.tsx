@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -17,7 +17,30 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
+// ---
+
+// Importing the modules for Google-Sign in
+import auth from '@react-native-firebase/auth';
+// import statusCodes along with GoogleSignin
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  isSuccessResponse,
+  statusCodes,
+  User,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
+
 export default function LoginScreen() {
+  // Google sign in consts
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  // But only from googleservices.json will go in here I think
+  GoogleSignin.configure({
+  webClientId: '192201958422-4diei81elsnq4edspsbncjkjtcd8pt6t.apps.googleusercontent.com',
+  });
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -27,16 +50,50 @@ export default function LoginScreen() {
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
 
-  const handleLogin = async () => {
-    // This is where you'll add your login logic
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Add your login logic here
-      console.log('Login attempt:', { email, password });
-    }, 1000);
+  const GoogleSignIn = async () => {
+    try {
+      // Check if your device supports Google Play
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      // Get the users ID token\
+      const response = await GoogleSignin.signIn();
+
+      // console.log('response', response);
+
+      // Create a Google credential with the token
+      const googleCredential = auth.GoogleAuthProvider.credential(response.data?.idToken);
+
+      // Sign-in the user with the credential
+      return auth().signInWithCredential(googleCredential);
+    } catch (error) {
+      if (isErrorWithCode(error)) {
+        switch (error.code) {
+          case statusCodes.IN_PROGRESS:
+            // operation (eg. sign in) already in progress
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            // Android only, play services not available or outdated
+            break;
+          default:
+          // some other error happened
+        }
+      } else {
+        // an error that's not related to google sign in occurred
+      }
+    }
   };
+
+    // Handle user state changes
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (initializing) return null;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -133,7 +190,6 @@ export default function LoginScreen() {
                 { backgroundColor: colors.primary },
                 isLoading && { opacity: 0.7 }
               ]}
-              onPress={handleLogin}
               disabled={isLoading}
               activeOpacity={0.8}
             >
@@ -152,11 +208,24 @@ export default function LoginScreen() {
             </View>
 
             {/* OAuth Buttons */}
+            // I need to add the onpress for GoogleSignIn
+            // So let's do that
             <TouchableOpacity 
               style={[styles.oauthButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
               activeOpacity={0.8}
+              onPress={async () => {
+                setIsLoading(true);
+                try {
+                  await GoogleSignIn();
+                  router.push('/(tabs)');
+                } catch (error) {
+                  console.error('Google Sign-In Error:', error);
+                } finally {
+                  setIsLoading(false);
+                }
+              }}
             >
-              <FontAwesome name="google" size={20} color="#4285F4" />
+              <FontAwesome name="google" size={20} color="#4285F4"/>
               <Text style={[styles.oauthText, { color: colors.text }]}>
                 Continue with Google
               </Text>

@@ -33,7 +33,7 @@ export default function FinalScreen() {
         {/* Success Section */}
         <View style={styles.successSection}>
           <View style={[styles.successIcon, { backgroundColor: colors.success }]}>
-            <FontAwesome name="check" size={40} color="white" />
+            <FontAwesome name="check" size={32} color="white" />
           </View>
           
           <Text style={[styles.title, { color: colors.text }]}>
@@ -49,7 +49,7 @@ export default function FinalScreen() {
         <View style={styles.featuresSection}>
           <View style={styles.featureItem}>
             <View style={[styles.featureIcon, { backgroundColor: colors.primary + '20' }]}>
-              <FontAwesome name="clock-o" size={20} color={colors.primary} />
+              <FontAwesome name="clock-o" size={18} color={colors.primary} />
             </View>
             <Text style={[styles.featureText, { color: colors.text }]}>
               Smart break reminders
@@ -58,7 +58,7 @@ export default function FinalScreen() {
           
           <View style={styles.featureItem}>
             <View style={[styles.featureIcon, { backgroundColor: colors.secondary + '20' }]}>
-              <FontAwesome name="heart" size={20} color={colors.secondary} />
+              <FontAwesome name="heart" size={18} color={colors.secondary} />
             </View>
             <Text style={[styles.featureText, { color: colors.text }]}>
               Personalized wellness routines
@@ -67,7 +67,7 @@ export default function FinalScreen() {
           
           <View style={styles.featureItem}>
             <View style={[styles.featureIcon, { backgroundColor: colors.primary + '20' }]}>
-              <FontAwesome name="bar-chart" size={20} color={colors.primary} />
+              <FontAwesome name="bar-chart" size={18} color={colors.primary} />
             </View>
             <Text style={[styles.featureText, { color: colors.text }]}>
               Progress tracking & insights
@@ -93,7 +93,7 @@ export default function FinalScreen() {
             <Text style={styles.startButtonText}>
               Start Your Journey
             </Text>
-            <FontAwesome name="arrow-right" size={20} color="white" style={styles.buttonIcon} />
+            <FontAwesome name="arrow-right" size={16} color="white" style={styles.buttonIcon} />
           </TouchableOpacity>
         </View>
 
@@ -114,100 +114,101 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 32,
+    paddingHorizontal: 24,
+    paddingVertical: 40,
     justifyContent: 'center',
   },
   successSection: {
     alignItems: 'center',
-    marginBottom: 60,
+    marginBottom: 40,
   },
   successIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowRadius: 8,
+    elevation: 4,
   },
   title: {
-    fontSize: 36,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   message: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
-    lineHeight: 28,
-    paddingHorizontal: 20,
+    lineHeight: 24,
+    paddingHorizontal: 16,
     fontWeight: '400',
   },
   featuresSection: {
-    marginBottom: 40,
+    marginBottom: 32,
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-    paddingHorizontal: 10,
+    marginBottom: 12,
+    paddingHorizontal: 8,
   },
   featureIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 14,
   },
   featureText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '500',
   },
   encouragementSection: {
-    marginBottom: 40,
-    paddingHorizontal: 10,
+    marginBottom: 32,
+    paddingHorizontal: 8,
   },
   encouragementText: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 20,
     fontStyle: 'italic',
   },
   buttonSection: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   startButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 20,
-    borderRadius: 16,
+    paddingVertical: 16,
+    borderRadius: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
   },
   startButtonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    marginRight: 8,
+    marginRight: 6,
   },
   buttonIcon: {
-    marginLeft: 4,
+    marginLeft: 2,
   },
   footer: {
     alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: 12,
   },
   footerText: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
     fontWeight: '500',
   },

@@ -16,16 +16,8 @@ import Colors from '@/constants/Colors';
 type ProfileData = {
   codingHours: number;
   takesBreaks: boolean | null;
-  workFeeling: string;
+  mainChallenge: string;
 };
-
-const feelingOptions = [
-  { id: 'exhausted', emoji: '😴', label: 'Exhausted' },
-  { id: 'stressed', emoji: '😰', label: 'Stressed' },
-  { id: 'neutral', emoji: '😐', label: 'Neutral' },
-  { id: 'satisfied', emoji: '😊', label: 'Satisfied' },
-  { id: 'energized', emoji: '🚀', label: 'Energized' },
-];
 
 const codingHourOptions = [
   { hours: 2, label: '1-2 hours' },
@@ -35,11 +27,17 @@ const codingHourOptions = [
   { hours: 10, label: '9+ hours' },
 ];
 
+const challengeOptions = [
+  { id: 'focus', label: 'Staying focused', icon: 'bullseye' },
+  { id: 'breaks', label: 'Taking breaks', icon: 'pause' },
+  { id: 'stress', label: 'Managing stress', icon: 'heart' },
+];
+
 export default function ProfilingScreen() {
   const [profileData, setProfileData] = useState<ProfileData>({
     codingHours: 6,
     takesBreaks: null,
-    workFeeling: '',
+    mainChallenge: '',
   });
   
   const colorScheme = useColorScheme();
@@ -51,7 +49,7 @@ export default function ProfilingScreen() {
     router.push('./routine');
   };
 
-  const isFormComplete = profileData.takesBreaks !== null && profileData.workFeeling !== '';
+  const isFormComplete = profileData.takesBreaks !== null && profileData.mainChallenge !== '';
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -166,35 +164,37 @@ export default function ProfilingScreen() {
           </View>
         </View>
 
-        {/* Question 3: Work Feeling */}
+        {/* Question 3: Main Challenge */}
         <View style={styles.questionContainer}>
           <Text style={[styles.questionTitle, { color: colors.text }]}>
-            How do you usually feel after work?
+            What's your main challenge?
           </Text>
-          <View style={styles.feelingContainer}>
-            {feelingOptions.map((option) => (
+          <View style={styles.challengeContainer}>
+            {challengeOptions.map((option) => (
               <TouchableOpacity
                 key={option.id}
                 style={[
-                  styles.feelingOption,
+                  styles.challengeOption,
                   {
-                    backgroundColor: profileData.workFeeling === option.id 
+                    backgroundColor: profileData.mainChallenge === option.id 
                       ? colors.secondary 
                       : colors.surface,
-                    borderColor: profileData.workFeeling === option.id 
+                    borderColor: profileData.mainChallenge === option.id 
                       ? colors.secondary 
                       : colors.border,
                   }
                 ]}
-                onPress={() => setProfileData({ ...profileData, workFeeling: option.id })}
+                onPress={() => setProfileData({ ...profileData, mainChallenge: option.id })}
                 activeOpacity={0.8}
               >
-                <Text style={styles.feelingEmoji}>
-                  {option.emoji}
-                </Text>
+                <FontAwesome 
+                  name={option.icon as any} 
+                  size={16} 
+                  color={profileData.mainChallenge === option.id ? 'white' : colors.placeholder}
+                />
                 <Text style={[
-                  styles.feelingLabel,
-                  { color: profileData.workFeeling === option.id ? 'white' : colors.text }
+                  styles.challengeOptionText,
+                  { color: profileData.mainChallenge === option.id ? 'white' : colors.text }
                 ]}>
                   {option.label}
                 </Text>
@@ -229,33 +229,34 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 32,
+    paddingHorizontal: 24,
     paddingTop: 40,
-    paddingBottom: 32,
+    paddingBottom: 24,
+    justifyContent: 'center',
   },
   header: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 24,
   },
   title: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 20,
+    lineHeight: 20,
+    paddingHorizontal: 16,
   },
   questionContainer: {
-    marginBottom: 32,
+    marginBottom: 24,
   },
   questionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
-    marginBottom: 20,
+    marginBottom: 14,
     textAlign: 'center',
   },
   hoursContainer: {
@@ -264,70 +265,69 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   hourOption: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    marginBottom: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginBottom: 8,
     borderWidth: 1,
     flex: 0.48,
     alignItems: 'center',
   },
   hourOptionText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
   },
   booleanContainer: {
-    gap: 12,
+    gap: 10,
   },
   booleanOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 10,
     borderWidth: 1,
   },
   booleanOptionText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '500',
-    marginLeft: 12,
+    marginLeft: 10,
   },
-  feelingContainer: {
+  challengeContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'space-between',
+    gap: 8,
   },
-  feelingOption: {
+  challengeOption: {
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: 12,
     paddingHorizontal: 8,
-    borderRadius: 12,
-    marginBottom: 12,
+    borderRadius: 10,
     borderWidth: 1,
-    flex: 0.48,
+    justifyContent: 'center',
   },
-  feelingEmoji: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  feelingLabel: {
-    fontSize: 14,
+  challengeOptionText: {
+    fontSize: 13,
     fontWeight: '500',
+    marginLeft: 8,
     textAlign: 'center',
+    flex: 1,
   },
   continueButton: {
-    paddingVertical: 18,
-    borderRadius: 16,
+    paddingVertical: 16,
+    borderRadius: 12,
     marginTop: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
   },
   continueButtonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },

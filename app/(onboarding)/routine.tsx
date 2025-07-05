@@ -84,7 +84,7 @@ export default function RoutineScreen() {
             <FontAwesome name="magic" size={24} color="white" />
           </View>
           <Text style={[styles.title, { color: colors.text }]}>
-            Your first micro-habits
+            Your first little habits
           </Text>
           <Text style={[styles.subtitle, { color: colors.placeholder }]}>
             Based on your answers, we've personalized these wellness routines for you

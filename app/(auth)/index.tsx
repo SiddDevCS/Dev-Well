@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   StatusBar,
+  Image,
 } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
@@ -26,35 +27,18 @@ export default function AuthWelcome() {
       
       {/* Hero Section */}
       <View style={styles.heroSection}>
-        <View style={[styles.logoContainer, { backgroundColor: colors.primary }]}>
-          <FontAwesome name="leaf" size={40} color="white" />
+        <View style={styles.logoContainer}>
+          <Image 
+            source={require('@/assets/images/adaptive-icon.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
         
         <Text style={[styles.appTitle, { color: colors.text }]}>DevWell</Text>
         <Text style={[styles.subtitle, { color: colors.placeholder }]}>
           Wellness breaks for productive developers
         </Text>
-        
-        <View style={styles.featureContainer}>
-          <View style={styles.featureItem}>
-            <FontAwesome name="clock-o" size={16} color={colors.secondary} />
-            <Text style={[styles.featureText, { color: colors.placeholder }]}>
-              Smart break reminders
-            </Text>
-          </View>
-          <View style={styles.featureItem}>
-            <FontAwesome name="heart" size={16} color={colors.secondary} />
-            <Text style={[styles.featureText, { color: colors.placeholder }]}>
-              Mindful exercises
-            </Text>
-          </View>
-          <View style={styles.featureItem}>
-            <FontAwesome name="bar-chart" size={16} color={colors.secondary} />
-            <Text style={[styles.featureText, { color: colors.placeholder }]}>
-              Productivity insights
-            </Text>
-          </View>
-        </View>
       </View>
 
       {/* Auth Options */}
@@ -97,6 +81,7 @@ export default function AuthWelcome() {
           </TouchableOpacity>
         </Link>
 
+        {/*
         <Link href="./signup" asChild>
           <TouchableOpacity 
             style={[styles.secondaryButton, { backgroundColor: colors.secondary }]}
@@ -105,17 +90,10 @@ export default function AuthWelcome() {
             <Text style={styles.secondaryButtonText}>Create New Account</Text>
           </TouchableOpacity>
         </Link>
+        */}
 
-        {/* Temporary Button - Test Onboarding */}
-        <TouchableOpacity
-          style={[styles.tempButton, { backgroundColor: colors.primary + '40', borderColor: colors.primary }]}
-          onPress={() => router.push('/(onboarding)/welcome')}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.tempButtonText, { color: colors.primary }]}>
-            🚀 Try Onboarding Flow (Temporary)
-          </Text>
-        </TouchableOpacity>
+        {/* Let's add some spacing between ToS/Privacy Policy and the sign in with email button */}
+        <View style={{ height: 20 }} />
 
         {/* Footer */}
         <View style={styles.footer}>
@@ -152,6 +130,10 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
+  logo: {
+    width: 60,
+    height: 60,
+  },
   appTitle: {
     fontSize: 32,
     fontWeight: 'bold',
@@ -164,18 +146,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     lineHeight: 24,
   },
-  featureContainer: {
-    alignItems: 'center',
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  featureText: {
-    fontSize: 14,
-    marginLeft: 8,
-  },
+
   authSection: {
     paddingHorizontal: 32,
     paddingBottom: 32,
@@ -216,7 +187,7 @@ const styles = StyleSheet.create({
   primaryButton: {
     paddingVertical: 16,
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
@@ -253,20 +224,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 18,
   },
-  tempButton: {
-    paddingVertical: 16,
-    borderRadius: 12,
-    marginBottom: 24,
-    borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  tempButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
+
 }); 

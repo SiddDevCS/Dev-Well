@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
@@ -112,8 +113,12 @@ export default function ForgotPasswordScreen() {
               <FontAwesome name="chevron-left" size={20} color={colors.text} />
             </TouchableOpacity>
             
-            <View style={[styles.logoContainer, { backgroundColor: colors.primary }]}>
-              <FontAwesome name="key" size={24} color="white" />
+            <View style={styles.logoContainer}>
+              <Image 
+                source={require('@/assets/images/adaptive-icon.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
             </View>
             
             <Text style={[styles.title, { color: colors.text }]}>Reset Password</Text>
@@ -215,6 +220,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+  },
+  logo: {
+    width: 50,
+    height: 50,
   },
   title: {
     fontSize: 28,

@@ -56,6 +56,15 @@ export default function TabLayout() {
           headerTitle: 'Your Progress',
         }}
       />
+      {/* Settings Tab */}
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+          headerTitle: 'Settings',
+        }}
+      />
     </Tabs>
   );
 }

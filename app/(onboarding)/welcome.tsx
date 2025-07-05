@@ -44,7 +44,7 @@ export default function WelcomeScreen() {
         {/* Description */}
         <View style={styles.descriptionSection}>
           <Text style={[styles.description, { color: colors.placeholder }]}>
-            We help developers find focus, avoid burnout, and feel better every day.
+            We help developers find focus, avoid burnouts, and feel better every day.
           </Text>
         </View>
 

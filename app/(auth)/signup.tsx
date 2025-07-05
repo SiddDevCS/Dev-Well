@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
@@ -63,8 +64,12 @@ export default function SignupScreen() {
               <FontAwesome name="chevron-left" size={20} color={colors.text} />
             </TouchableOpacity>
             
-            <View style={[styles.logoContainer, { backgroundColor: colors.secondary }]}>
-              <FontAwesome name="leaf" size={24} color="white" />
+            <View style={styles.logoContainer}>
+              <Image 
+                source={require('@/assets/images/adaptive-icon.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
             </View>
             
             <Text style={[styles.title, { color: colors.text }]}>Create Account</Text>
@@ -310,6 +315,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+  },
+  logo: {
+    width: 50,
+    height: 50,
   },
   title: {
     fontSize: 28,

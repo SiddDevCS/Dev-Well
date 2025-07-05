@@ -25,7 +25,7 @@ const improvementOptions: ImprovementOption[] = [
     id: 'stress',
     title: 'Reduce stress',
     icon: 'heart',
-    description: 'Find calm during busy coding sessions',
+    description: 'Find peace during busy coding sessions',
   },
   {
     id: 'focus',

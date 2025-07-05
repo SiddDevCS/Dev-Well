@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -8,10 +8,12 @@ import {
   View,
   Text,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { StorageService, DailyStats, UserProgress } from './storage';
 
 const { width } = Dimensions.get('window');
 
@@ -111,7 +113,7 @@ export default function StatsScreen() {
           <View style={styles.overviewGrid}>
             <View style={[styles.overviewCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               <View style={[styles.overviewIcon, { backgroundColor: colors.primary + '20' }]}>
-                <FontAwesome name="heart" size={20} color={colors.primary} />
+                <FontAwesome5 name="heart" size={20} color={colors.primary} />
               </View>
               <Text style={[styles.overviewNumber, { color: colors.text }]}>
                 {todayStats.breaksToday}
@@ -123,7 +125,7 @@ export default function StatsScreen() {
 
             <View style={[styles.overviewCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               <View style={[styles.overviewIcon, { backgroundColor: colors.secondary + '20' }]}>
-                <FontAwesome name="clock-o" size={20} color={colors.secondary} />
+                <FontAwesome5 name="clock" size={20} color={colors.secondary} />
               </View>
               <Text style={[styles.overviewNumber, { color: colors.text }]}>
                 {todayStats.minutesToday}
@@ -135,7 +137,7 @@ export default function StatsScreen() {
 
             <View style={[styles.overviewCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               <View style={[styles.overviewIcon, { backgroundColor: colors.primary + '20' }]}>
-                <FontAwesome name="mobile" size={20} color={colors.primary} />
+                <FontAwesome5 name="mobile-alt" size={20} color={colors.primary} />
               </View>
               <Text style={[styles.overviewNumber, { color: colors.text }]}>
                 {todayStats.appOpens}

@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
@@ -55,8 +56,12 @@ export default function LoginScreen() {
               <FontAwesome name="chevron-left" size={20} color={colors.text} />
             </TouchableOpacity>
             
-            <View style={[styles.logoContainer, { backgroundColor: colors.primary }]}>
-              <FontAwesome name="leaf" size={24} color="white" />
+            <View style={styles.logoContainer}>
+              <Image 
+                source={require('@/assets/images/adaptive-icon.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
             </View>
             
             <Text style={[styles.title, { color: colors.text }]}>Welcome back</Text>
@@ -137,16 +142,7 @@ export default function LoginScreen() {
               </Text>
             </TouchableOpacity>
 
-            {/* Temporary Button - Navigate to Main App */}
-            <TouchableOpacity
-              style={[styles.tempButton, { backgroundColor: colors.secondary }]}
-              onPress={() => router.push('/(tabs)')}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.tempButtonText}>
-                🚀 Go to Main App (Temporary)
-              </Text>
-            </TouchableOpacity>
+
 
             {/* Divider */}
             <View style={styles.dividerContainer}>
@@ -228,6 +224,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  logo: {
+    width: 50,
+    height: 50,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -298,22 +298,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
-  tempButton: {
-    paddingVertical: 16,
-    borderRadius: 12,
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  tempButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
+
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',

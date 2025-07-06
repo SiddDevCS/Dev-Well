@@ -17,6 +17,20 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
+// ---
+
+// Importing the modules for Google-Sign in
+import auth from '@react-native-firebase/auth';
+// import statusCodes along with GoogleSignin
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  isSuccessResponse,
+  statusCodes,
+  User,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
+
 export default function SignupScreen() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -31,6 +45,44 @@ export default function SignupScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
+
+  // Google sign in configuration
+  GoogleSignin.configure({
+    webClientId: '192201958422-4diei81elsnq4edspsbncjkjtcd8pt6t.apps.googleusercontent.com',
+  });
+
+  // Google sign in function
+  const GoogleSignIn = async () => {
+    try {
+      // Check if your device supports Google Play
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      // Get the users ID token\
+      const response = await GoogleSignin.signIn();
+
+      // console.log('response', response);
+
+      // Create a Google credential with the token
+      const googleCredential = auth.GoogleAuthProvider.credential(response.data?.idToken);
+
+      // Sign-in the user with the credential
+      return auth().signInWithCredential(googleCredential);
+    } catch (error) {
+      if (isErrorWithCode(error)) {
+        switch (error.code) {
+          case statusCodes.IN_PROGRESS:
+            // operation (eg. sign in) already in progress
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            // Android only, play services not available or outdated
+            break;
+          default:
+          // some other error happened
+        }
+      } else {
+        // an error that's not related to google sign in occurred
+      }
+    }
+  };
 
   const handleSignup = async () => {
     // This is where you'll add your signup logic
@@ -247,6 +299,17 @@ export default function SignupScreen() {
             <TouchableOpacity 
               style={[styles.oauthButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
               activeOpacity={0.8}
+              onPress={async () => {
+                setIsLoading(true);
+                try {
+                  await GoogleSignIn();
+                  router.push('/(tabs)');
+                } catch (error) {
+                  console.error('Google Sign-In Error:', error);
+                } finally {
+                  setIsLoading(false);
+                }
+              }}
             >
               <FontAwesome name="google" size={20} color="#4285F4" />
               <Text style={[styles.oauthText, { color: colors.text }]}>

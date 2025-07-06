@@ -208,8 +208,6 @@ export default function LoginScreen() {
             </View>
 
             {/* OAuth Buttons */}
-            // I need to add the onpress for GoogleSignIn
-            // So let's do that
             <TouchableOpacity 
               style={[styles.oauthButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
               activeOpacity={0.8}

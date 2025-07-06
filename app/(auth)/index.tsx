@@ -14,12 +14,61 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
+// ---
+
+// Importing the modules for Google-Sign in
+import auth from '@react-native-firebase/auth';
+// import statusCodes along with GoogleSignin
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  isSuccessResponse,
+  statusCodes,
+  User,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
+
+
 const { width, height } = Dimensions.get('window');
 
 export default function AuthWelcome() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  // Google sign in function
+  const GoogleSignIn = async () => {
+    try {
+      // Check if your device supports Google Play
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      // Get the users ID token\
+      const response = await GoogleSignin.signIn();
+
+      // console.log('response', response);
+
+      // Create a Google credential with the token
+      const googleCredential = auth.GoogleAuthProvider.credential(response.data?.idToken);
+
+      // Sign-in the user with the credential
+      return auth().signInWithCredential(googleCredential);
+    } catch (error) {
+      if (isErrorWithCode(error)) {
+        switch (error.code) {
+          case statusCodes.IN_PROGRESS:
+            // operation (eg. sign in) already in progress
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            // Android only, play services not available or outdated
+            break;
+          default:
+          // some other error happened
+        }
+      } else {
+        // an error that's not related to google sign in occurred
+      }
+    }
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -41,9 +90,9 @@ export default function AuthWelcome() {
         </Text>
       </View>
 
-      {/* Auth Options */}
+
       <View style={styles.authSection}>
-        {/* OAuth Buttons */}
+        {/* OAuth Buttons 
         <TouchableOpacity 
           style={[styles.oauthButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
           activeOpacity={0.8}
@@ -53,6 +102,29 @@ export default function AuthWelcome() {
             Continue with Google
           </Text>
         </TouchableOpacity>
+        */}
+
+      {/* OAuth Buttons */}
+      <TouchableOpacity 
+        style={[styles.oauthButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
+        activeOpacity={0.8}
+        onPress={async () => {
+          setIsLoading(true);
+          try {
+          await GoogleSignIn();
+                  router.push('/(tabs)');
+                } catch (error) {
+                  console.error('Google Sign-In Error:', error);
+                } finally {
+                  setIsLoading(false);
+                }
+              }}
+            >
+              <FontAwesome name="google" size={20} color="#4285F4"/>
+              <Text style={[styles.oauthText, { color: colors.text }]}>
+                Continue with Google
+              </Text>
+          </TouchableOpacity>
 
         <TouchableOpacity 
           style={[styles.oauthButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
@@ -77,7 +149,14 @@ export default function AuthWelcome() {
             style={[styles.primaryButton, { backgroundColor: colors.primary }]}
             activeOpacity={0.8}
           >
-            <Text style={styles.primaryButtonText}>Sign in with Email</Text>
+            {/* Currently in white-mode the text is white, I want it to be black in white-mode 
+            So let's make it black in white-mode
+            */}
+            <Text style={[styles.primaryButtonText, { color: colors.text }]}>
+              Sign in with Email
+            </Text>
+            {/*
+            <Text style={styles.primaryButtonText}>Sign in with Email</Text>*/}
           </TouchableOpacity>
         </Link>
 

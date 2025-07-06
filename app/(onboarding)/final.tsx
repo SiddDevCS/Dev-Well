@@ -12,6 +12,8 @@ import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { StorageService } from '../(tabs)/storage';
+import OnboardingProgress from '@/components/OnboardingProgress';
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,14 +22,26 @@ export default function FinalScreen() {
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
 
-  const handleStart = () => {
-    // Navigate to the main app
-    router.push('/(tabs)');
+  const handleStart = async () => {
+    try {
+      // Mark onboarding as completed
+      await StorageService.setOnboardingCompleted();
+      
+      // Navigate to auth for registration/login
+      router.push('/(auth)');
+    } catch (error) {
+      console.error('Error completing onboarding:', error);
+      // Still navigate to auth even if storage fails
+      router.push('/(auth)');
+    }
   };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
+      
+      {/* Progress Indicator */}
+      <OnboardingProgress currentStep={8} totalSteps={8} />
       
       <View style={styles.content}>
         {/* Success Section */}
@@ -37,12 +51,20 @@ export default function FinalScreen() {
           </View>
           
           <Text style={[styles.title, { color: colors.text }]}>
-            You're all set!
+            Perfect! You're ready to thrive 🚀
           </Text>
           
           <Text style={[styles.message, { color: colors.placeholder }]}>
-            You're all set. Let's build a healthier you, one line of code at a time.
+            Your personalized wellness plan is ready! Sign up now to save your preferences and join thousands of developers building healthier habits.
           </Text>
+          
+          {/* Social Proof */}
+          <View style={[styles.socialProofBox, { backgroundColor: colors.surface, borderColor: colors.primary }]}>
+            <FontAwesome name="users" size={16} color={colors.primary} />
+            <Text style={[styles.socialProofText, { color: colors.text }]}>
+              Join 10,000+ devs improving their wellbeing
+            </Text>
+          </View>
         </View>
 
         {/* Features Summary */}
@@ -91,7 +113,7 @@ export default function FinalScreen() {
             activeOpacity={0.8}
           >
             <Text style={styles.startButtonText}>
-              Start Your Journey
+              Sign Up to Continue
             </Text>
             <FontAwesome name="arrow-right" size={16} color="white" style={styles.buttonIcon} />
           </TouchableOpacity>
@@ -147,6 +169,22 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     paddingHorizontal: 16,
     fontWeight: '400',
+    marginBottom: 20,
+  },
+  socialProofBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    marginTop: 8,
+  },
+  socialProofText: {
+    fontSize: 13,
+    fontWeight: '500',
+    marginLeft: 6,
   },
   featuresSection: {
     marginBottom: 32,

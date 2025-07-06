@@ -12,6 +12,7 @@ import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import OnboardingProgress from '@/components/OnboardingProgress';
 
 type ImprovementOption = {
   id: string;
@@ -82,6 +83,9 @@ export default function PersonalizationScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
       
+      {/* Progress Indicator */}
+      <OnboardingProgress currentStep={2} totalSteps={6} />
+      
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
@@ -91,6 +95,14 @@ export default function PersonalizationScreen() {
           <Text style={[styles.subtitle, { color: colors.placeholder }]}>
             Select all that apply. We'll personalize your experience.
           </Text>
+          
+          {/* Value Reinforcement */}
+          <View style={[styles.valueBox, { backgroundColor: colors.surface, borderColor: colors.primary }]}>
+            <FontAwesome name="star" size={16} color={colors.primary} />
+            <Text style={[styles.valueText, { color: colors.text }]}>
+              Personalized routines = 3x better results
+            </Text>
+          </View>
         </View>
 
         {/* Options */}
@@ -149,8 +161,9 @@ export default function PersonalizationScreen() {
           onPress={handleNotSure}
           activeOpacity={0.8}
         >
+          <FontAwesome name="question-circle" size={16} color={colors.primary} />
           <Text style={[styles.notSureButtonText, { color: colors.text }]}>
-            I'm not sure yet
+            I'm not sure yet (that's okay!)
           </Text>
         </TouchableOpacity>
 
@@ -198,7 +211,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     lineHeight: 20,
+    marginBottom: 16,
+  },
+  valueBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    marginTop: 8,
+  },
+  valueText: {
+    fontSize: 13,
+    fontWeight: '500',
+    marginLeft: 6,
   },
   optionsContainer: {
     marginBottom: 20,
@@ -246,6 +274,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   notSureButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 12,
     borderRadius: 10,
     marginBottom: 12,
@@ -260,6 +291,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     textAlign: 'center',
+    marginLeft: 8,
   },
   continueButton: {
     paddingVertical: 14,

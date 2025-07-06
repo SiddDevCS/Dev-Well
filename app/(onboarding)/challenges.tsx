@@ -14,23 +14,61 @@ import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import OnboardingProgress from '@/components/OnboardingProgress';
 
-const codingHourOptions = [
-  { hours: 2, label: '1-2 hours', description: 'Just getting started or part-time' },
-  { hours: 4, label: '3-4 hours', description: 'Moderate coding sessions' },
-  { hours: 6, label: '5-6 hours', description: 'Standard workday coding' },
-  { hours: 8, label: '7-8 hours', description: 'Full-time developer' },
-  { hours: 10, label: '9+ hours', description: 'Heavy coding sessions' },
+type Challenge = {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+};
+
+const challengeOptions: Challenge[] = [
+  {
+    id: 'focus',
+    title: 'Staying focused',
+    description: 'Distractions and context switching break your flow',
+    icon: 'bullseye',
+    color: '#FF6B6B',
+  },
+  {
+    id: 'breaks',
+    title: 'Taking breaks',
+    description: 'Forgetting to step away from the screen',
+    icon: 'pause',
+    color: '#4ECDC4',
+  },
+  {
+    id: 'stress',
+    title: 'Managing stress',
+    description: 'Deadlines and bugs can be overwhelming',
+    icon: 'heart',
+    color: '#45B7D1',
+  },
+  {
+    id: 'posture',
+    title: 'Poor posture',
+    description: 'Neck and back pain from long coding sessions',
+    icon: 'user',
+    color: '#FFA726',
+  },
+  {
+    id: 'sleep',
+    title: 'Sleep quality',
+    description: 'Late night coding affects your rest',
+    icon: 'moon-o',
+    color: '#9C27B0',
+  },
 ];
 
-export default function ProfilingScreen() {
-  const [codingHours, setCodingHours] = useState<number>(6);
+export default function ChallengesScreen() {
+  const [selectedChallenge, setSelectedChallenge] = useState<string>('');
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
 
   const handleContinue = () => {
-    console.log('Coding hours:', codingHours);
-    router.push('./breaks');
+    console.log('Selected challenge:', selectedChallenge);
+    router.push('./routine');
   };
 
   const handleBack = () => {
@@ -42,67 +80,67 @@ export default function ProfilingScreen() {
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
       
       {/* Progress Indicator */}
-      <OnboardingProgress currentStep={3} totalSteps={6} />
+      <OnboardingProgress currentStep={5} totalSteps={6} />
       
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
           <View style={[styles.iconContainer, { backgroundColor: colors.primary }]}>
-            <FontAwesome name="code" size={24} color="white" />
+            <FontAwesome name="crosshairs" size={24} color="white" />
           </View>
           <Text style={[styles.title, { color: colors.text }]}>
-            How many hours do you code daily?
+            What's your biggest challenge?
           </Text>
           <Text style={[styles.subtitle, { color: colors.placeholder }]}>
-            This helps us suggest the right break frequency for you
+            We'll prioritize solutions that address your main pain point
           </Text>
         </View>
 
         {/* Options */}
         <View style={styles.optionsContainer}>
-          {codingHourOptions.map((option) => (
+          {challengeOptions.map((challenge) => (
             <TouchableOpacity
-              key={option.hours}
+              key={challenge.id}
               style={[
                 styles.option,
                 {
-                  backgroundColor: codingHours === option.hours 
-                    ? colors.primary 
+                  backgroundColor: selectedChallenge === challenge.id 
+                    ? challenge.color 
                     : colors.surface,
-                  borderColor: codingHours === option.hours 
-                    ? colors.primary 
+                  borderColor: selectedChallenge === challenge.id 
+                    ? challenge.color 
                     : colors.border,
                 }
               ]}
-              onPress={() => setCodingHours(option.hours)}
+              onPress={() => setSelectedChallenge(challenge.id)}
               activeOpacity={0.8}
             >
               <View style={styles.optionContent}>
                 <View style={[
                   styles.optionIcon,
-                  { backgroundColor: codingHours === option.hours ? 'white' : colors.primary + '20' }
+                  { backgroundColor: selectedChallenge === challenge.id ? 'white' : challenge.color + '20' }
                 ]}>
                   <FontAwesome 
-                    name="clock-o" 
+                    name={challenge.icon as any} 
                     size={20} 
-                    color={codingHours === option.hours ? colors.primary : colors.primary}
+                    color={selectedChallenge === challenge.id ? challenge.color : challenge.color}
                   />
                 </View>
                 <View style={styles.optionText}>
                   <Text style={[
                     styles.optionTitle,
-                    { color: codingHours === option.hours ? 'white' : colors.text }
+                    { color: selectedChallenge === challenge.id ? 'white' : colors.text }
                   ]}>
-                    {option.label}
+                    {challenge.title}
                   </Text>
                   <Text style={[
                     styles.optionDescription,
-                    { color: codingHours === option.hours ? 'white' : colors.placeholder }
+                    { color: selectedChallenge === challenge.id ? 'white' : colors.placeholder }
                   ]}>
-                    {option.description}
+                    {challenge.description}
                   </Text>
                 </View>
-                {codingHours === option.hours && (
+                {selectedChallenge === challenge.id && (
                   <View style={styles.checkmark}>
                     <FontAwesome name="check" size={16} color="white" />
                   </View>
@@ -114,9 +152,9 @@ export default function ProfilingScreen() {
 
         {/* Helper Text */}
         <View style={[styles.helperBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <FontAwesome name="lightbulb-o" size={16} color={colors.secondary} />
+          <FontAwesome name="info-circle" size={16} color={colors.secondary} />
           <Text style={[styles.helperText, { color: colors.text }]}>
-            We'll use this to recommend the perfect break schedule for your workflow
+            Don't worry - we'll help you tackle this! Most developers face similar challenges.
           </Text>
         </View>
 
@@ -134,8 +172,13 @@ export default function ProfilingScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.continueButton, { backgroundColor: colors.secondary }]}
+            style={[
+              styles.continueButton,
+              { backgroundColor: colors.secondary },
+              selectedChallenge === '' && { opacity: 0.5 }
+            ]}
             onPress={handleContinue}
+            disabled={selectedChallenge === ''}
             activeOpacity={0.8}
           >
             <Text style={styles.continueButtonText}>

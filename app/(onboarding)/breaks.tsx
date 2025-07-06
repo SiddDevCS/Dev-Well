@@ -14,23 +14,15 @@ import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import OnboardingProgress from '@/components/OnboardingProgress';
 
-const codingHourOptions = [
-  { hours: 2, label: '1-2 hours', description: 'Just getting started or part-time' },
-  { hours: 4, label: '3-4 hours', description: 'Moderate coding sessions' },
-  { hours: 6, label: '5-6 hours', description: 'Standard workday coding' },
-  { hours: 8, label: '7-8 hours', description: 'Full-time developer' },
-  { hours: 10, label: '9+ hours', description: 'Heavy coding sessions' },
-];
-
-export default function ProfilingScreen() {
-  const [codingHours, setCodingHours] = useState<number>(6);
+export default function BreaksScreen() {
+  const [takesBreaks, setTakesBreaks] = useState<boolean | null>(null);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
 
   const handleContinue = () => {
-    console.log('Coding hours:', codingHours);
-    router.push('./breaks');
+    console.log('Takes breaks:', takesBreaks);
+    router.push('./challenges');
   };
 
   const handleBack = () => {
@@ -42,81 +34,116 @@ export default function ProfilingScreen() {
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
       
       {/* Progress Indicator */}
-      <OnboardingProgress currentStep={3} totalSteps={6} />
+      <OnboardingProgress currentStep={4} totalSteps={6} />
       
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
-          <View style={[styles.iconContainer, { backgroundColor: colors.primary }]}>
-            <FontAwesome name="code" size={24} color="white" />
+          <View style={[styles.iconContainer, { backgroundColor: colors.secondary }]}>
+            <FontAwesome name="pause" size={24} color="white" />
           </View>
           <Text style={[styles.title, { color: colors.text }]}>
-            How many hours do you code daily?
+            Do you take regular breaks?
           </Text>
           <Text style={[styles.subtitle, { color: colors.placeholder }]}>
-            This helps us suggest the right break frequency for you
+            Understanding your current habits helps us create better reminders
           </Text>
         </View>
 
         {/* Options */}
         <View style={styles.optionsContainer}>
-          {codingHourOptions.map((option) => (
-            <TouchableOpacity
-              key={option.hours}
-              style={[
-                styles.option,
-                {
-                  backgroundColor: codingHours === option.hours 
-                    ? colors.primary 
-                    : colors.surface,
-                  borderColor: codingHours === option.hours 
-                    ? colors.primary 
-                    : colors.border,
-                }
-              ]}
-              onPress={() => setCodingHours(option.hours)}
-              activeOpacity={0.8}
-            >
-              <View style={styles.optionContent}>
-                <View style={[
-                  styles.optionIcon,
-                  { backgroundColor: codingHours === option.hours ? 'white' : colors.primary + '20' }
-                ]}>
-                  <FontAwesome 
-                    name="clock-o" 
-                    size={20} 
-                    color={codingHours === option.hours ? colors.primary : colors.primary}
-                  />
-                </View>
-                <View style={styles.optionText}>
-                  <Text style={[
-                    styles.optionTitle,
-                    { color: codingHours === option.hours ? 'white' : colors.text }
-                  ]}>
-                    {option.label}
-                  </Text>
-                  <Text style={[
-                    styles.optionDescription,
-                    { color: codingHours === option.hours ? 'white' : colors.placeholder }
-                  ]}>
-                    {option.description}
-                  </Text>
-                </View>
-                {codingHours === option.hours && (
-                  <View style={styles.checkmark}>
-                    <FontAwesome name="check" size={16} color="white" />
-                  </View>
-                )}
+          <TouchableOpacity
+            style={[
+              styles.option,
+              {
+                backgroundColor: takesBreaks === true 
+                  ? colors.success 
+                  : colors.surface,
+                borderColor: takesBreaks === true 
+                  ? colors.success 
+                  : colors.border,
+              }
+            ]}
+            onPress={() => setTakesBreaks(true)}
+            activeOpacity={0.8}
+          >
+            <View style={styles.optionContent}>
+              <View style={[
+                styles.optionIcon,
+                { backgroundColor: takesBreaks === true ? 'white' : colors.success + '20' }
+              ]}>
+                <FontAwesome 
+                  name="check" 
+                  size={20} 
+                  color={takesBreaks === true ? colors.success : colors.success}
+                />
               </View>
-            </TouchableOpacity>
-          ))}
+              <View style={styles.optionText}>
+                <Text style={[
+                  styles.optionTitle,
+                  { color: takesBreaks === true ? 'white' : colors.text }
+                ]}>
+                  Yes, I take breaks
+                </Text>
+                <Text style={[
+                  styles.optionDescription,
+                  { color: takesBreaks === true ? 'white' : colors.placeholder }
+                ]}>
+                  I already have a break routine
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.option,
+              {
+                backgroundColor: takesBreaks === false 
+                  ? colors.primary 
+                  : colors.surface,
+                borderColor: takesBreaks === false 
+                  ? colors.primary 
+                  : colors.border,
+              }
+            ]}
+            onPress={() => setTakesBreaks(false)}
+            activeOpacity={0.8}
+          >
+            <View style={styles.optionContent}>
+              <View style={[
+                styles.optionIcon,
+                { backgroundColor: takesBreaks === false ? 'white' : colors.primary + '20' }
+              ]}>
+                <FontAwesome 
+                  name="times" 
+                  size={20} 
+                  color={takesBreaks === false ? colors.primary : colors.primary}
+                />
+              </View>
+              <View style={styles.optionText}>
+                <Text style={[
+                  styles.optionTitle,
+                  { color: takesBreaks === false ? 'white' : colors.text }
+                ]}>
+                  No, I forget to break
+                </Text>
+                <Text style={[
+                  styles.optionDescription,
+                  { color: takesBreaks === false ? 'white' : colors.placeholder }
+                ]}>
+                  I get lost in code and forget to rest
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Helper Text */}
         <View style={[styles.helperBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
           <FontAwesome name="lightbulb-o" size={16} color={colors.secondary} />
           <Text style={[styles.helperText, { color: colors.text }]}>
-            We'll use this to recommend the perfect break schedule for your workflow
+            No worries! We'll help you build this habit. Regular breaks can improve focus by up to 40%.
           </Text>
         </View>
 
@@ -134,8 +161,13 @@ export default function ProfilingScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.continueButton, { backgroundColor: colors.secondary }]}
+            style={[
+              styles.continueButton,
+              { backgroundColor: colors.secondary },
+              takesBreaks === null && { opacity: 0.5 }
+            ]}
             onPress={handleContinue}
+            disabled={takesBreaks === null}
             activeOpacity={0.8}
           >
             <Text style={styles.continueButtonText}>
@@ -188,7 +220,7 @@ const styles = StyleSheet.create({
   },
   option: {
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 16,
     borderWidth: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -199,7 +231,7 @@ const styles = StyleSheet.create({
   optionContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: 20,
   },
   optionIcon: {
     width: 40,
@@ -220,14 +252,6 @@ const styles = StyleSheet.create({
   optionDescription: {
     fontSize: 13,
     lineHeight: 18,
-  },
-  checkmark: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   helperBox: {
     flexDirection: 'row',

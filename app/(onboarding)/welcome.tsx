@@ -12,6 +12,7 @@ import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import OnboardingProgress from '@/components/OnboardingProgress';
 
 const { width, height } = Dimensions.get('window');
 
@@ -27,6 +28,9 @@ export default function WelcomeScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
+      
+      {/* Progress Indicator */}
+      <OnboardingProgress currentStep={1} totalSteps={6} />
       
       <View style={styles.content}>
         {/* Logo Section */}
@@ -44,8 +48,16 @@ export default function WelcomeScreen() {
         {/* Description */}
         <View style={styles.descriptionSection}>
           <Text style={[styles.description, { color: colors.placeholder }]}>
-            We help developers find focus, avoid burnouts, and feel better every day.
+            We get it — dev life can be intense. Let's build sustainable habits that help you thrive, not just survive.
           </Text>
+          
+          {/* Expectation Setting */}
+          <View style={[styles.expectationBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <FontAwesome name="clock-o" size={16} color={colors.secondary} />
+            <Text style={[styles.expectationText, { color: colors.text }]}>
+              Takes just 2 minutes to set up!
+            </Text>
+          </View>
         </View>
 
         {/* Get Started Button */}
@@ -58,6 +70,7 @@ export default function WelcomeScreen() {
             <Text style={styles.getStartedButtonText}>
               Get Started
             </Text>
+            <FontAwesome name="arrow-right" size={16} color="white" style={styles.buttonIcon} />
           </TouchableOpacity>
         </View>
       </View>
@@ -113,11 +126,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 28,
     fontWeight: '400',
+    marginBottom: 20,
+  },
+  expectationBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginTop: 8,
+  },
+  expectationText: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 8,
   },
   buttonSection: {
     paddingBottom: 40,
   },
   getStartedButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 20,
     borderRadius: 16,
     shadowColor: '#000',
@@ -131,5 +163,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  buttonIcon: {
+    marginLeft: 8,
   },
 }); 

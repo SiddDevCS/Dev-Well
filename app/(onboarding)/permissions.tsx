@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import OnboardingProgress from '@/components/OnboardingProgress';
 
 type PermissionFeature = {
   id: string;
@@ -80,6 +81,9 @@ export default function PermissionsScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
       
+      {/* Progress Indicator */}
+      <OnboardingProgress currentStep={7} totalSteps={8} />
+      
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
@@ -87,11 +91,32 @@ export default function PermissionsScreen() {
             <FontAwesome name="bell" size={24} color="white" />
           </View>
           <Text style={[styles.title, { color: colors.text }]}>
-            Stay connected
+            Stay on track with gentle reminders
           </Text>
           <Text style={[styles.subtitle, { color: colors.placeholder }]}>
-            We'll only remind you about your wellness goals — no spam, ever.
+            We'll send you friendly notifications to help you maintain your wellness habits — no spam, ever.
           </Text>
+        </View>
+
+        {/* Visual Examples */}
+        <View style={[styles.exampleBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <Text style={[styles.exampleTitle, { color: colors.text }]}>
+            Here's what you'll receive:
+          </Text>
+          <View style={styles.notificationExamples}>
+            <View style={[styles.notificationExample, { backgroundColor: colors.primary + '10' }]}>
+              <FontAwesome name="bell" size={14} color={colors.primary} />
+              <Text style={[styles.notificationText, { color: colors.text }]}>
+                "Time for a 2-minute stretch! 🧘‍♂️"
+              </Text>
+            </View>
+            <View style={[styles.notificationExample, { backgroundColor: colors.secondary + '10' }]}>
+              <FontAwesome name="star" size={14} color={colors.secondary} />
+              <Text style={[styles.notificationText, { color: colors.text }]}>
+                "Great job! 3 days streak 🔥"
+              </Text>
+            </View>
+          </View>
         </View>
 
         {/* Features */}

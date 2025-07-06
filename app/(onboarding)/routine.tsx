@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import OnboardingProgress from '@/components/OnboardingProgress';
 
 type Routine = {
   id: string;
@@ -77,6 +78,9 @@ export default function RoutineScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
       
+      {/* Progress Indicator */}
+      <OnboardingProgress currentStep={6} totalSteps={6} />
+      
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
@@ -84,11 +88,19 @@ export default function RoutineScreen() {
             <FontAwesome name="magic" size={24} color="white" />
           </View>
           <Text style={[styles.title, { color: colors.text }]}>
-            Your first little habits
+            Your personalized habits
           </Text>
           <Text style={[styles.subtitle, { color: colors.placeholder }]}>
-            Based on your answers, we've personalized these wellness routines for you
+            Based on your answers, here are habits that will make the biggest impact
           </Text>
+          
+          {/* Social Proof */}
+          <View style={[styles.socialProofBox, { backgroundColor: colors.surface, borderColor: colors.primary }]}>
+            <FontAwesome name="users" size={16} color={colors.primary} />
+            <Text style={[styles.socialProofText, { color: colors.text }]}>
+              Users with 2+ habits report 40% better focus
+            </Text>
+          </View>
         </View>
 
         {/* Routine Cards */}
@@ -141,6 +153,18 @@ export default function RoutineScreen() {
                 <Text style={[styles.routineDescription, { color: colors.placeholder }]}>
                   {routine.description}
                 </Text>
+                
+                {/* Preview Button */}
+                <TouchableOpacity
+                  style={[styles.previewButton, { backgroundColor: colors.primary + '10', borderColor: colors.primary }]}
+                  onPress={() => console.log('Preview', routine.id)}
+                  activeOpacity={0.8}
+                >
+                  <FontAwesome name="play" size={12} color={colors.primary} />
+                  <Text style={[styles.previewButtonText, { color: colors.primary }]}>
+                    Preview
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           ))}
@@ -218,6 +242,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  socialProofBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    marginTop: 8,
+  },
+  socialProofText: {
+    fontSize: 13,
+    fontWeight: '500',
+    marginLeft: 6,
   },
   routinesContainer: {
     marginBottom: 16,
@@ -263,6 +303,22 @@ const styles = StyleSheet.create({
   routineDescription: {
     fontSize: 13,
     lineHeight: 18,
+    marginBottom: 12,
+  },
+  previewButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    borderWidth: 1,
+    alignSelf: 'flex-start',
+  },
+  previewButtonText: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginLeft: 4,
   },
   infoBox: {
     flexDirection: 'row',

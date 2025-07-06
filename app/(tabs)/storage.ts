@@ -41,6 +41,16 @@ export interface UserProgress {
   achievementsUnlocked: string[];
 }
 
+export interface OnboardingPreferences {
+  improvementGoals: string[];
+  codingHours: number;
+  takesBreaks: boolean;
+  mainChallenge: string;
+  enabledRoutines: string[];
+  completedAt: string;
+  personalizedMessage?: string;
+}
+
 // Storage Keys
 const STORAGE_KEYS = {
   BREAK_SESSIONS: 'break_sessions',
@@ -48,6 +58,9 @@ const STORAGE_KEYS = {
   USER_SETTINGS: 'user_settings',
   USER_PROGRESS: 'user_progress',
   LAST_APP_OPEN: 'last_app_open',
+  ONBOARDING_COMPLETED: 'onboarding_completed',
+  FIRST_TIME_USER: 'first_time_user',
+  ONBOARDING_PREFERENCES: 'onboarding_preferences',
 } as const;
 
 // Storage Service
@@ -291,6 +304,87 @@ export class StorageService {
 
   static generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+
+  // Onboarding Management
+  static async isFirstTimeUser(): Promise<boolean> {
+    try {
+      const firstTimeFlag = await AsyncStorage.getItem(STORAGE_KEYS.FIRST_TIME_USER);
+      return firstTimeFlag === null; // If no flag exists, it's a first-time user
+    } catch (error) {
+      console.error('Error checking first-time user:', error);
+      return true; // Default to first-time user on error
+    }
+  }
+
+  static async setFirstTimeUserCompleted(): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.FIRST_TIME_USER, 'false');
+    } catch (error) {
+      console.error('Error setting first-time user completed:', error);
+    }
+  }
+
+  static async isOnboardingCompleted(): Promise<boolean> {
+    try {
+      const onboardingFlag = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
+      return onboardingFlag === 'true';
+    } catch (error) {
+      console.error('Error checking onboarding completion:', error);
+      return false; // Default to not completed on error
+    }
+  }
+
+  static async setOnboardingCompleted(): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
+    } catch (error) {
+      console.error('Error setting onboarding completed:', error);
+    }
+  }
+
+  // Onboarding Preferences Management
+  static async saveOnboardingPreferences(preferences: OnboardingPreferences): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_PREFERENCES, JSON.stringify(preferences));
+    } catch (error) {
+      console.error('Error saving onboarding preferences:', error);
+    }
+  }
+
+  static async getOnboardingPreferences(): Promise<OnboardingPreferences | null> {
+    try {
+      const preferences = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_PREFERENCES);
+      return preferences ? JSON.parse(preferences) : null;
+    } catch (error) {
+      console.error('Error getting onboarding preferences:', error);
+      return null;
+    }
+  }
+
+  static async updateOnboardingPreferences(updates: Partial<OnboardingPreferences>): Promise<void> {
+    try {
+      const currentPreferences = await this.getOnboardingPreferences();
+      if (currentPreferences) {
+        const newPreferences = { ...currentPreferences, ...updates };
+        await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_PREFERENCES, JSON.stringify(newPreferences));
+      }
+    } catch (error) {
+      console.error('Error updating onboarding preferences:', error);
+    }
+  }
+
+  static async exportOnboardingPreferences(): Promise<string | null> {
+    try {
+      const preferences = await this.getOnboardingPreferences();
+      if (preferences) {
+        return JSON.stringify(preferences, null, 2);
+      }
+      return null;
+    } catch (error) {
+      console.error('Error exporting onboarding preferences:', error);
+      return null;
+    }
   }
 
   // Clear all data (for testing/reset)

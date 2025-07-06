@@ -28,6 +28,9 @@ import {
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
 
+// Importing Apple authentication
+import { AppleButton, appleAuth } from '@invertase/react-native-apple-authentication';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -67,6 +70,34 @@ export default function AuthWelcome() {
       } else {
         // an error that's not related to google sign in occurred
       }
+    }
+  };
+
+  // Apple sign in function
+  const onAppleButtonPress = async () => {
+    try {
+      // Start the sign-in request
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        // As per the FAQ of react-native-apple-authentication, the name should come first in the following array.
+        // See: https://github.com/invertase/react-native-apple-authentication#faqs
+        requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+      });
+
+      // Ensure Apple returned a user identityToken
+      if (!appleAuthRequestResponse.identityToken) {
+        throw new Error('Apple Sign-In failed - no identify token returned');
+      }
+
+      // Create a Firebase credential from the response
+      const { identityToken, nonce } = appleAuthRequestResponse;
+      const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
+
+      // Sign the user in with the credential
+      return auth().signInWithCredential(appleCredential);
+    } catch (error) {
+      console.error('Apple Sign-In Error:', error);
+      throw error;
     }
   };
 
@@ -129,6 +160,17 @@ export default function AuthWelcome() {
         <TouchableOpacity 
           style={[styles.oauthButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
           activeOpacity={0.8}
+          onPress={async () => {
+            setIsLoading(true);
+            try {
+              await onAppleButtonPress();
+              router.push('/(tabs)');
+            } catch (error) {
+              console.error('Apple Sign-In Error:', error);
+            } finally {
+              setIsLoading(false);
+            }
+          }}
         >
           <FontAwesome name="apple" size={20} color={colors.text} />
           <Text style={[styles.oauthText, { color: colors.text }]}>

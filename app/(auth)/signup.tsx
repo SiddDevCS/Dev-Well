@@ -20,7 +20,7 @@ import Colors from '@/constants/Colors';
 // ---
 
 // Importing the modules for Google-Sign in
-import auth from '@react-native-firebase/auth';
+import auth, { createUserWithEmailAndPassword } from '@react-native-firebase/auth';
 // import statusCodes along with GoogleSignin
 import {
   GoogleSignin,
@@ -116,14 +116,55 @@ export default function SignupScreen() {
   };
 
   const handleSignup = async () => {
-    // This is where you'll add your signup logic
+    // Validate form
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      console.error('All fields are required');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      console.error('Passwords do not match');
+      return;
+    }
+
+    if (!agreedToTerms) {
+      console.error('You must agree to the terms and conditions');
+      return;
+    }
+
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await createUserWithEmailAndPassword(auth(), email, password);
+      console.log('User account created & signed in!');
+      router.push('/(tabs)');
+    } catch (error: any) {
+      console.error('Signup Error:', error);
+      
+      // Handle specific Firebase auth errors
+      let errorMessage = 'An error occurred during sign up';
+      
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = 'That email address is already in use!';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'That email address is invalid!';
+          break;
+        case 'auth/operation-not-allowed':
+          errorMessage = 'Email/password accounts are not enabled';
+          break;
+        case 'auth/weak-password':
+          errorMessage = 'Password is too weak. Please choose a stronger password';
+          break;
+        default:
+          errorMessage = error.message || 'An error occurred during sign up';
+      }
+      
+      // You can display this error to the user using an alert or toast
+      console.error('Signup Error:', errorMessage);
+    } finally {
       setIsLoading(false);
-      // Add your signup logic here
-      console.log('Signup attempt:', { firstName, lastName, email, password, confirmPassword });
-    }, 1000);
+    }
   };
 
   const isFormValid = firstName && lastName && email && password && confirmPassword && 

@@ -17,6 +17,9 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
+// Firebase imports
+import auth, { sendPasswordResetEmail } from '@react-native-firebase/auth';
+
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -27,16 +30,41 @@ export default function ForgotPasswordScreen() {
   const router = useRouter();
 
   const handleResetPassword = async () => {
-    if (!email) return;
+    if (!email) {
+      console.error('Email is required');
+      return;
+    }
     
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await sendPasswordResetEmail(auth(), email);
+      console.log('Password reset email sent successfully!');
       setIsSubmitted(true);
-      // Add your forgot password logic here
-      console.log('Password reset requested for:', email);
-    }, 1000);
+    } catch (error: any) {
+      console.error('Password Reset Error:', error);
+      
+      // Handle specific Firebase auth errors
+      let errorMessage = 'An error occurred while sending the reset email';
+      
+      switch (error.code) {
+        case 'auth/user-not-found':
+          errorMessage = 'No account found with this email address';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Invalid email address';
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = 'Too many requests. Please try again later';
+          break;
+        default:
+          errorMessage = error.message || 'An error occurred while sending the reset email';
+      }
+      
+      // You can display this error to the user using an alert or toast
+      console.error('Reset Password Error:', errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleResendEmail = () => {

@@ -20,7 +20,7 @@ import Colors from '@/constants/Colors';
 // ---
 
 // Importing the modules for Google-Sign in
-import auth from '@react-native-firebase/auth';
+import auth, { signInWithEmailAndPassword } from '@react-native-firebase/auth';
 // import statusCodes along with GoogleSignin
 import {
   GoogleSignin,
@@ -110,6 +110,51 @@ export default function LoginScreen() {
     } catch (error) {
       console.error('Apple Sign-In Error:', error);
       throw error;
+    }
+  };
+
+  // Email/Password sign in function
+  const handleEmailLogin = async () => {
+    if (!email || !password) {
+      console.error('Email and password are required');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth(), email, password);
+      console.log('User signed in successfully!');
+      router.push('/(tabs)');
+    } catch (error: any) {
+      console.error('Email Sign-In Error:', error);
+      
+      // Handle specific Firebase auth errors
+      let errorMessage = 'An error occurred during sign in';
+      
+      switch (error.code) {
+        case 'auth/user-not-found':
+          errorMessage = 'No user found with this email address';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Incorrect password';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Invalid email address';
+          break;
+        case 'auth/user-disabled':
+          errorMessage = 'This account has been disabled';
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = 'Too many failed attempts. Please try again later';
+          break;
+        default:
+          errorMessage = error.message || 'An error occurred during sign in';
+      }
+      
+      // You can display this error to the user using an alert or toast
+      console.error('Login Error:', errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -223,6 +268,7 @@ export default function LoginScreen() {
               ]}
               disabled={isLoading}
               activeOpacity={0.8}
+              onPress={handleEmailLogin}
             >
               <Text style={styles.loginButtonText}>
                 {isLoading ? 'Signing in...' : 'Sign In'}
